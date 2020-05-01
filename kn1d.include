@@ -1,0 +1,14 @@
+;
+; KN1D.INCLUDE
+;
+   for i=0,n_elements(mid)-1 do begin &$
+      mid(i)=locate(x,normal2data(xloc(i),/x))      &$
+      midH(i)=locate(xH,normal2data(xloc(i),/x))    &$  
+      midH2(i)=locate(xH2,normal2data(xloc(i),/x))  &$    
+   endfor
+   mid=mid > 0
+   midH=midH > 0
+   midH2=midH2 > 0
+   copyright
+   xyouts,/norm,.15,.9,_HH+' Gauge Pressure: '+sval(gaugeH2,l=5)+' mtorr',charsize=0.8,color=2
+   if strlen(File) gt 0 then xyouts,/norm,.15,.86,'FILE: '+File,charsize=0.8,color=4

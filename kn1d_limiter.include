@@ -1,0 +1,25 @@
+;
+; KN1D_LIMITER.INCLUDE
+;
+   xl=data2normal(!x.crange(0))
+   xR=data2normal(!x.crange(1))
+   if !y.type ne 0 then begin
+      ymin=10^!y.crange(0) 
+      ymax=10^!y.crange(1) 
+   endif else begin
+      ymin=!y.crange(0)
+      ymax=!y.crange(1)
+   endelse
+   yl=data2normal(ymin,/y)
+   yh=data2normal(ymax,/y)
+   xlim=data2normal(xlimiter)
+   xs=data2normal(xsep)
+   h=.05
+   plots,[xl,xlim,xlim,xl,xl],[yl,yl,yl+h,yl+h,yl],/norm
+   xyouts,0.5*(xl+xlim),0.5*(yl+yl+h),/norm,'LIMITER',charsize=0.8,align=0.5
+   xyouts,0.5*(xs+xlim),0.5*(yl+yl+h),/norm,'SOL',charsize=0.8,align=0.5
+   xyouts,0.5*(xs+xR),0.5*(yl+yl+h),/norm,'CORE',charsize=0.8,align=0.5
+   xhash=xl+(xlim-xl)*findgen(11)/10
+   for ii=n_elements(xhash)-1,1,-1 do plots,[xhash(ii),xhash(ii)-h],[yl+h,yl],/norm
+   oplot,[xlimiter,xlimiter],[ymin,ymax],linestyle=5
+   oplot,[xsep,xsep],[ymin,ymax],linestyle=5
