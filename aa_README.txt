@@ -30,4 +30,5 @@ an undefined function/procedure then let me know.
 
 Best of luck,
 
-Brian LaBomard  April 21, 2003
+Brian LaBombard  April 21, 2003
+
