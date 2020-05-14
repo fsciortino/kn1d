@@ -1,0 +1,59 @@
+# make_fortran_so
+#  This shell script compiles various fortran files into shared object modules
+#  Makes 64 bit objects
+#
+# Modified by FS to test from B. LaBombard's directory
+pd=/home/labombard/idl_lib/fortran/pd
+loc=/home/labombard/idl_lib/fortran
+
+# Fortran code that uses SLATEC and CMLIB public domain routines
+   gfortran  -fPIC $loc/fast_db3val.f $pd/cmlib/db3val.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_db3val.so -w
+   gfortran  -fPIC $loc/call_db3ink.f $pd/cmlib/db3ink.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_db3ink.so -w
+   gfortran  -fPIC $loc/fast_db2val.f $pd/cmlib/db2val.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_db2val.so -w
+   gfortran  -fPIC $loc/call_db2ink.f $pd/cmlib/db2ink.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_db2ink.so -w
+   gfortran  -fPIC $loc/call_dbknot.f $pd/cmlib/dbknot.f -shared -o call_dbknot.so -w
+   gfortran  -fPIC $loc/call_dbintk.f $pd/slatec/dbintk.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_dbintk.so -w
+   gfortran  -fPIC $loc/call_dbsppp.f $pd/slatec/dbsppp.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_dbsppp.so -w
+   gfortran  -fPIC $loc/fast_dbvalu.f $pd/slatec/dbvalu.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_dbvalu.so -w
+   gfortran  -fPIC $loc/fast_dppval.f $pd/slatec/dppval.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_dppval.so -w
+
+   gfortran  -fPIC $loc/fast_b3val.f $pd/cmlib/b3val.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_b3val.so -w
+   gfortran  -fPIC $loc/call_b3ink.f $pd/cmlib/b3ink.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_b3ink.so -w
+   gfortran  -fPIC $loc/fast_b2val.f $pd/cmlib/b2val.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_b2val.so -w
+   gfortran  -fPIC $loc/call_b2ink.f $pd/cmlib/b2ink.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_b2ink.so -w
+   gfortran  -fPIC $loc/call_bknot.f $pd/cmlib/bknot.f -shared -o call_bknot.so -w
+   gfortran  -fPIC $loc/call_bintk.f $pd/slatec/bintk.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_bintk.so -w
+   gfortran  -fPIC $loc/call_bsppp.f $pd/slatec/bsppp.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_bsppp.so -w
+   gfortran  -fPIC $loc/fast_bvalu.f $pd/slatec/bvalu.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_bvalu.so -w
+   gfortran  -fPIC $loc/fast_ppval.f $pd/slatec/ppval.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_ppval.so -w
+
+   gfortran  -fPIC $loc/conft_bl.f $pd/slatec/fc.f $pd/slatec/r1mach.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o conft_bl.so -w
+   gfortran  -fPIC $loc/bslsq_bl.f $pd/slatec/efc.f $pd/slatec/r1mach.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o bslsq_bl.so -w
+
+   gfortran  -fPIC $loc/dbslsq_bl.f $pd/slatec/defc.f $pd/slatec/dr1mach.f $pd/slatec/xermsg.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o dbslsq_bl.so -w
+
+# Fortran code that uses UVMIF_BL.f, a modified version of NMS public domain routine FMIN.f
+   gfortran  -fPIC $loc/fastexp0.f          $loc/uvmif_bl.f  -shared -o fastexp0.so -w
+   gfortran  -fPIC $loc/fastexpw0.f         $loc/uvmif_bl.f  -shared -o fastexpw0.so -w
+   gfortran  -fPIC $loc/fastexp2p0.f        $loc/uvmif_bl.f  -shared -o fastexp2p0.so -w
+   gfortran  -fPIC $loc/fastexplin0.f       $loc/uvmif_bl.f  -shared -o fastexplin0.so -w
+   gfortran  -fPIC $loc/fastexprange0.f     $loc/uvmif_bl.f  -shared -o fastexprange0.so -w
+   gfortran  -fPIC $loc/fastexp2prange0.f   $loc/uvmif_bl.f  -shared -o fastexp2prange0.so -w
+   gfortran  -fPIC $loc/fastexp3prange0.f   $loc/uvmif_bl.f  -shared -o fastexp3prange0.so -w
+   gfortran  -fPIC $loc/fastexplinrange0.f  $loc/uvmif_bl.f  -shared -o fastexplinrange0.so -w
+   gfortran  -fPIC $loc/one_exp0.f          $loc/uvmif_bl.f  -shared -o one_exp0.so -w
+   gfortran  -fPIC $loc/fit3ptexp.f         $loc/uvmif_bl.f  -shared -o fit3ptexp.so -w
+   gfortran  -fPIC $loc/fit3ptexpsigma.f    $loc/uvmif_bl.f  -shared -o fit3ptexpsigma.so -w
+
+# Stand-alone fortran code
+   gfortran  -fPIC $loc/abel_inv.f -shared -o abel_inv.so -w
+   gfortran  -fPIC $loc/condense.f -shared -o condense.so -w
+   gfortran  -fPIC $loc/fast_abel_inv.f -shared -o fast_abel_inv.so -w
+   gfortran  -fPIC $loc/find_vf.f -shared -o find_vf.so -w
+   gfortran  -fPIC $loc/smarrayderiv.f -shared -o smarrayderiv.so -w
+   gfortran  -fPIC $loc/smarray.f -shared -o smarray.so -w
+   gfortran  -fPIC $loc/tsurface.f -shared -o tsurface.so -w
+
+# Fortran code that uses NETLIB public domain routines
+   gfortran  -fPIC $loc/surfit.f -shared -o surfit.so -w
+   gfortran  -fPIC $loc/regrid.f -shared -o regrid.so -w

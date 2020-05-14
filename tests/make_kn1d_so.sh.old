@@ -1,0 +1,38 @@
+# make_kn1d_so
+#  These commands compile fortran files for kn1d into shared object modules
+#
+# 
+
+# Options suggested by B.LaBombard's aa_README.txt. g77 isn't available anymore, so we need an alternative to this...
+#   g77 fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -w
+#   g77 call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -w
+
+# basic attempt with gfortran, using "module load defaults idl". This doesn't work: I get an error indicating unregognized fortran symbols when running test_kn1d.pro
+#   gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -w -fPIC
+#   gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -w -fPIC
+
+# Specify some options for compatibility with g77, using "module load defaults idl". This gives a segfault.
+#   gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -g -fPIC -fsecond-underscore
+#   gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -g -fPIC -fsecond-underscore
+
+
+# similar to above, using "module load defaults idl". This gives segfault.
+#   gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -fPIC -ff2c
+#   gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -fPIC -ff2c 
+
+
+# try with intel compiler, with "module load intel idl". This gives the same error as "basic attempt":
+#   ifort fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -fPIC                                                                                                            
+#   ifort call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -fPIC
+
+# attempt using f2py recommendation for f90
+#gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -Wall -g -fno-second-underscore -fPIC -O3 -funroll-loops
+#gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -Wall -g -fno-second-underscore -fPIC -O3 -funroll-loops
+
+# attempt using f2py recommendation for f77
+#gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -Wall -g -ffixed-form -fno-second-underscore -fPIC -O3 -funroll-loops
+#gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -Wall -g -ffixed-form -fno-second-underscore -fPIC -O3 -funroll-loops
+
+   gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -fPIC -w
+   gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -fPIC -w 
+

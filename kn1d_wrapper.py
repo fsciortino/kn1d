@@ -69,7 +69,7 @@ def main():
 
 	#load the cmod parameters in idl
 
-	idl('restore, "./savfiles/kn1d_out_basecase_iter1.sav"')
+	idl('restore, "savfiles/kn1d_out_basecase_iter1.sav"')
 	#now combine the required cmod parameters and those from the shot
 	#time frame of interest
 
@@ -206,10 +206,10 @@ def opacTest():
 	stop = 0
 	end =  130
 
-	filename = '"kn1dFiles/OpacTestOutputsIncGauge"'
+	filename = '"kn1dFiles/OpacTestOutputsIncGauge"'   # save to this file
 
 
-	nE = np.load('nEnew.npy')
+	nE = np.load('nEnew.npy')    # ne array
 
 	rMid = nE[:,1]
 	# tHis is a workaround because broadcasting causes some error
@@ -221,7 +221,7 @@ def opacTest():
 
 
 
-	tE = np.load('tEnew.npy')
+	tE = np.load('tEnew.npy')    # Te array
 
 	rMidTE = tE[:,1]
 	tE = tE[:,0]*1000
@@ -283,10 +283,10 @@ def opacTest():
 
 	#manipulate away
 
-	rsep = 2.298
-	xlim = 2.360
+	rsep = 2.298    # m  -- just for plotting
+	xlim = 2.360    # m  -- limiter region
 
-	wall = max(rMid)
+	wall = max(rMid)   # m  --- radial grid limit
 
 	rKN1D = abs(rMid - wall)
 	print(rKN1D)

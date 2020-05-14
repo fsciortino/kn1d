@@ -3,7 +3,7 @@ c  Wrapper Routine
 
         subroutine fast_b2val(ARGC, ARGV)
         INTEGER*4               ARGC    !Argument count
-        INTEGER*4               ARGV(*) !Vector of pointers to argments
+        INTEGER*8               ARGV(*) !Vector of pointers to argments
 
 C       Local variables
 

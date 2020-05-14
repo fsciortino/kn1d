@@ -1,0 +1,12 @@
+# make_fortran_so
+#  This shell script compiles various fortran files into shared object modules
+#  Makes 64 bit objects
+#
+# Modified by FS to test from B. LaBombard's directory
+pd=/home/labombard/idl_lib/fortran/pd
+loc=/home/labombard/idl_lib/fortran
+
+# Fortran code that uses SLATEC and CMLIB public domain routines
+   gfortran  -fPIC $loc/fast_b2val.f $pd/cmlib/b2val.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o fast_b2val.so -w
+   gfortran  -fPIC $loc/call_b2ink.f $pd/cmlib/b2ink.f $pd/cmlib/xerror.f $pd/slatec/i1mach.f $pd/slatec/fdump.f -shared -o call_b2ink.so -w
+

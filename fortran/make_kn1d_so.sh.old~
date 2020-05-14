@@ -17,10 +17,22 @@
 
 
 # similar to above, using "module load defaults idl". This gives segfault.
-   gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -fPIC -ff2c -w
-   gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -fPIC -ff2c -w
+#   gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -fPIC -ff2c
+#   gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -fPIC -ff2c 
 
 
 # try with intel compiler, with "module load intel idl". This gives the same error as "basic attempt":
 #   ifort fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -fPIC                                                                                                            
 #   ifort call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -fPIC
+
+# attempt using f2py recommendation for f90
+#gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -Wall -g -fno-second-underscore -fPIC -O3 -funroll-loops
+#gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -Wall -g -fno-second-underscore -fPIC -O3 -funroll-loops
+
+# attempt using f2py recommendation for f77
+#gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -Wall -g -ffixed-form -fno-second-underscore -fPIC -O3 -funroll-loops
+#gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -Wall -g -ffixed-form -fno-second-underscore -fPIC -O3 -funroll-loops
+
+   gfortran fast_b2val.f b2val.f xerror.f i1mach.f fdump.f -shared -o fast_b2val.so -fPIC -w
+   gfortran call_b2ink.f b2ink.f xerror.f i1mach.f fdump.f -shared -o call_b2ink.so -fPIC -w 
+
