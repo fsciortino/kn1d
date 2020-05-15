@@ -1,4 +1,4 @@
 # wkn1d
 
-Wrapper for KN1D 
-A. Rosenthal & F. Sciortino
+KN1D tools
+contributed by F.Sciortino, A.Rosenthal, S-G. Baek
