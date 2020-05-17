@@ -24,8 +24,9 @@ Function JHS_Coef,Density,Te,create=create,no_null=no_null
 ;-
    common JH_Coef,DKnot,TKnot,order,LogR_BSCoef,LogS_BSCoef,LogAlpha_BSCoef,A_Lyman,A_Balmer
    if keyword_set(create) then create_JH_BSCoef
+   
    if type_of(LogR_BSCoef) eq 0 then begin
-      restore,'jh_bscoef.dat'
+      restore, 'jh_bscoef.dat'
    endif
 ;
 ; Evaluate S coefficients

@@ -420,10 +420,10 @@ def opacTest():
 	return 0 
 
 if __name__ == "__main__":
-	main()
+	#main()
 
 
-	#opacTest()
+	opacTest()
 	"""
 	import pickle
 	with open("kn1dFiles/NeutProf.dat", "rb") as f:
