@@ -69,7 +69,7 @@ def main():
 
 	#load the cmod parameters in idl
 
-	idl('restore, "./savfiles/kn1d_out_basecase_iter1.sav"')
+	idl('restore, "../savfiles/kn1d_out_basecase_iter1.sav"')
 	#now combine the required cmod parameters and those from the shot
 	#time frame of interest
 
@@ -206,7 +206,7 @@ def opacTest():
 	stop = 0
 	end =  130
 
-	filename = '"kn1dFiles/OpacTestOutputsIncGauge"'
+	filename = '"../savfiles/OpacTestOutputsIncGauge"'
 
 
 	nE = np.load('nEnew.npy')
@@ -356,7 +356,7 @@ def opacTest():
 	#we remove the .sav from the filename for saving the file
 	idl('set_ps, '+filename)
 
-	idl('save,x,x_lim,xsep,gaugeH2,mu,t_i,t_e,n_e,vx,lc,d_pipe,filename = "kn1dFiles/OpacTestOutputsIncGauge.sav"')
+	idl('save,x,x_lim,xsep,gaugeH2,mu,t_i,t_e,n_e,vx,lc,d_pipe,filename = "../savfiles/OpacTestOutputsIncGauge.sav"')
 
 	#idl('kn1d,x,x_lim,xsep,gaugeH2,mu,t_i,t_e,n_e,vx,lc,d_pipe,xH2,nH2, nHP,xH,nH,lyman, balmer,/plot')
 	idl('kn1d,x,x_lim,xsep,gaugeH2,mu,t_i,t_e,n_e,vx,lc,d_pipe, xh2,nh2,gammaxh2,th2,qxh2_total,nhp,thp,sh,sp, xh,nh,gammaxh,th,qxh_total,nethsource,sion,qh_total,sidewallh,lyman,balmer,gammahlim,/plot')
@@ -367,7 +367,7 @@ def opacTest():
 
 	#saving the lyman and blamer outputs for plotting later with x for plotting
 
-	idl('save,xH,nH,nHP,lyman,balmer,filename = "kn1dFiles/OpacTestOutputsIncGauge.sav"')
+	idl('save,xH,nH,nHP,lyman,balmer,filename = "../savfiles/OpacTestOutputsIncGauge.sav"')
 	"""
 	print(idl.xH)
 	print(idl.nH)
@@ -410,7 +410,7 @@ def opacTest():
 
 	import pickle
 
-	with open("kn1dFiles/NeutProfGuage.dat", "wb") as f:
+	with open("../savfiles/NeutProfGuage.dat", "wb") as f:
 		pickle.dump(resDict, f)
 
 	idl.close()
@@ -420,13 +420,13 @@ def opacTest():
 	return 0 
 
 if __name__ == "__main__":
-	main()
+	#main()
 
 
-	#opacTest()
+	opacTest()
 	"""
 	import pickle
-	with open("kn1dFiles/NeutProf.dat", "rb") as f:
+	with open("../savfiles/NeutProf.dat", "rb") as f:
 		ddict = pickle.load(f)
 
 	print(ddict.keys())
