@@ -8,9 +8,9 @@ FC = gfortran
 FLAGS = -fPIC -w -shared
 
 # directory where shared-object library should be created
-OUT_DIR =/home/sciortino/wkn1d
+OUT_DIR =../wkn1d
 
-# directory of Fortran code
+# directory of Fortran code (NB: KN1D_DIR must be defined!)
 KN1DF = $(KN1D_DIR)/fortran
 
 
@@ -19,6 +19,8 @@ all: kn1d
 kn1d :
 	@echo "Generating KN1D shared-object libraries"
 	@echo "Compiler flags: " ${FLAGS}
+	@echo "Building from Fortran source in " ${KN1DF}
+	@echo "OUT_DIR: " ${OUT_DIR}
 	$(FC) $(FLAGS) $(KN1DF)/fast_b2val.f $(KN1DF)/b2val.f $(KN1DF)/xerror.f \
 			$(KN1DF)/i1mach.f    $(KN1DF)/fdump.f \
 			-o ${OUT_DIR}/fast_b2val.so
