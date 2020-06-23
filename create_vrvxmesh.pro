@@ -6,7 +6,7 @@
 pro Create_VrVxMesh,nv,Ti,vx,vr,Tnorm,E0=E0,ixE0=ixE0,irE0=irE0,Tmax=Tmax
 ;
 ; Input:
-;	nvr - integer, number of elements desired in vr mesh
+;	nv - integer, number of elements desired in vr mesh
 ;	Ti  - fltarr(*), Ti profile
 ;
 ;   Keyword:
@@ -14,8 +14,8 @@ pro Create_VrVxMesh,nv,Ti,vx,vr,Tnorm,E0=E0,ixE0=ixE0,irE0=irE0,Tmax=Tmax
 ;	Tmax- float, ignore Ti above this value
 ;
 ; Output:
-;	vx  - dblarr(2*nvr+1), x velocity grid
-;	vr  - dblarr(nvr), r velocity grid
+;	vx  - dblarr(2*nv+1), x velocity grid
+;	vr  - dblarr(nv), r velocity grid
 ;	Tnorm - float, optimum normalization temperature
 ;
 ;   Keyword:

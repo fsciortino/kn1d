@@ -18,6 +18,8 @@
    key_default,ni_correct,1
    key_default,mu,2
    key_default,Truncate,1.0e-4
+   key_default,JH=1
+   key_default,Use_Collrad_Ionization=0
    print,'H_H_EL:'+sval(H_H_EL)
    print,'H_P_EL:'+sval(H_P_EL)
    print,'H_H2_EL:'+sval(H_H2_EL)
@@ -144,7 +146,7 @@
    Kinetic_H,vx,vr,xH,Tnorm,mu,TiH,TeH,neH,vxi,fHBC,GammaxHBC,PipeDiaH,fH2,fSH,nHP,THP,$
        fH,nH,GammaxH,VxH,pH,TH,qxH,qxH_total,NetHSource,Sion,QH,RxH,QH_total,AlbedoH,WallH,$
        truncate=truncate,Simple_CX=Simple_CX,Max_Gen=Max_Gen,$
-       No_Johnson_Hinnov=No_Johnson_Hinnov,No_Recomb=No_Recomb,$
+       No_Johnson_Hinnov=No_Johnson_Hinnov,Use_Collrad_Ionization=Use_Collrad_Ionization,No_Recomb=No_Recomb,$
        H_H_EL=H_H_EL,H_P_EL=H_P_EL,H_H2_EL=_H_H2_EL,H_P_CX=H_P_CX,ni_correct=ni_correct,$
        error=error,compute_errors=compute_errors,$
        plot=plot,debug=debug,debrief=debrief,pause=pause

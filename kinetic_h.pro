@@ -35,12 +35,14 @@
 ;
 ;________________________________________________________________________________
 pro Kinetic_H,vx,vr,x,Tnorm,mu,Ti,Te,n,vxi,fHBC,GammaxHBC,PipeDia,fH2,fSH,nHP,THP,$
-       fH,nH,GammaxH,VxH,pH,TH,qxH,qxH_total,NetHSource,Sion,QH,RxH,QH_total,AlbedoH,WallH,$
-       truncate=truncate,Simple_CX=Simple_CX,Max_Gen=Max_Gen,$
-       No_Johnson_Hinnov=No_Johnson_Hinnov,No_Recomb=No_Recomb,$
-       H_H_EL=H_H_EL,H_P_EL=H_P_EL,H_H2_EL=_H_H2_EL,H_P_CX=H_P_CX,ni_correct=ni_correct,$
-       error=error,compute_errors=compute_errors,$
-       plot=plot,debug=debug,debrief=debrief,pause=pause
+              fH,nH,GammaxH,VxH,pH,TH,qxH,qxH_total,NetHSource,Sion,QH,RxH,QH_total,AlbedoH,WallH,$
+              truncate=truncate,Simple_CX=Simple_CX,Max_Gen=Max_Gen,$
+              No_Johnson_Hinnov=No_Johnson_Hinnov,$
+              Use_Collrad_Ionization=Use_Collrad_Ionization,$
+              No_Recomb=No_Recomb,$
+              H_H_EL=H_H_EL,H_P_EL=H_P_EL,H_H2_EL=_H_H2_EL,H_P_CX=H_P_CX,ni_correct=ni_correct,$
+              error=error,compute_errors=compute_errors,$
+              plot=plot,debug=debug,debrief=debrief,pause=pause
 
    common Kinetic_H_Output,piH_xx,piH_yy,piH_zz,RxHCX,RxH2_H,RxP_H,RxW_H,EHCX,EH2_H,EP_H,EW_H,Epara_PerpH_H,SourceH,SRecomb
 
@@ -224,6 +226,10 @@ pro Kinetic_H,vx,vr,x,Tnorm,mu,Ti,Te,n,vxi,fHBC,GammaxHBC,PipeDia,fH2,fSH,nHP,TH
 ;		          rates published by Janev:
 ;
 ;			      Charge Exchange: p + H(1s) -> H(1s) + p
+;
+; Use_Collrad_Ionization - FS - if set, this overrides
+;                          No_Johnson_Hinnov and uses rates from the
+;                          COLLRAD code *for ionization only*
 ;			  
 ;	      No_Recomb	- if set, then DO NOT include recombination as a source of atomic neutrals
 ;		          in the algorithm
@@ -282,10 +288,11 @@ pro Kinetic_H,vx,vr,x,Tnorm,mu,Ti,Te,n,vxi,fHBC,GammaxHBC,PipeDia,fH2,fSH,nHP,TH
    prompt='Kinetic_H => '
 ;
    common Kinetic_H_input,vx_s,vr_s,x_s,Tnorm_s,mu_s,Ti_s,Te_s,n_s,vxi_s,fHBC_s,GammaxHBC_s,PipeDia_s,fH2_s,fSH_s,nHP_s,THP_s,$
-                          fH_s,Simple_CX_s,JH_s,Recomb_s,H_H_EL_s,H_P_EL_s,H_H2_EL_s,H_P_CX_s
+                          fH_s,Simple_CX_s,JH_s,Collrad_s,Recomb_s,H_H_EL_s,H_P_EL_s,H_H2_EL_s,H_P_CX_s ; FS: added collrad_s
 
    common Kinetic_H_internal,vr2vx2,vr2vx_vxi2,fi_hat,ErelH_P,Ti_mu,ni,sigv,alpha_ion,v_v2,v_v,vr2_vx2,vx_vx,$
           Vr2pidVrdVx,SIG_CX,SIG_H_H,SIG_H_H2,SIG_H_P,Alpha_CX,Alpha_H_H2,Alpha_H_P,MH_H_sum,Delta_nHs,Sn,Rec
+
    common Kinetic_H_H2_Moments,nH2,VxH2,TH2
 ;
 ; Internal Debug switches
@@ -313,6 +320,8 @@ pro Kinetic_H,vx,vr,x,Tnorm,mu,Ti,Te,n,vxi,fHBC,GammaxHBC,PipeDia,fH2,fSH,nHP,TH
    key_default,Simple_CX,1
    key_default,Max_Gen,50
    key_default,No_Johnson_Hinnov,0
+   ; FS: extra flag to activate ionization rates from COLLRAD
+   key_default,Use_Collrad_Ionization,1 ; true by default
    JH=1 & if No_Johnson_Hinnov then JH=0
    key_default,No_Recomb,0
    Recomb=1 & if No_Recomb then Recomb=0
@@ -685,15 +694,20 @@ pro Kinetic_H,vx,vr,x,Tnorm,mu,Ti,Te,n,vxi,fHBC,GammaxHBC,PipeDia,fH2,fSH,nHP,TH
 ;
       sigv=dblarr(nx,3)
 ;________________________________________________________________________________
-; Reaction R1:  e + H -> e + H(+) + e 
+; Reaction R1:  e + H -> e + H(+) + e   (ionization)
 ;________________________________________________________________________________
-      if JH then begin
-         sigv(*,1)=JHS_Coef(n,Te,/no_null)
+
+      if Use_Collrad_Ionization then begin
+         sigv(*,1) = collrad_sigmav_ion_h0(n,Te) ; from COLLRAD code (DEGAS-2)
       endif else begin
-         sigv(*,1)=sigmav_ion_h0(Te)
+         if JH then begin
+            sigv(*,1)=JHS_Coef(n,Te,/no_null)   ; Johnson-Hinnov, limited Te range
+         endif else begin
+            sigv(*,1)=sigmav_ion_h0(Te)         ; from Janev et al., up to 20keV
+         endelse
       endelse
 ;________________________________________________________________________________
-; Reaction R2:  e + H(+) -> H(1s) + hv
+; Reaction R2:  e + H(+) -> H(1s) + hv  (radiative recombination)
 ;________________________________________________________________________________
       if JH then begin
          sigv(*,2)=JHAlpha_Coef(n,Te,/no_null)
@@ -1029,7 +1043,7 @@ fH_Iterate:
    Max_dxR=Max_dx(1:nx-1)
    Max_dx=Max_dxL < Max_dxR
    ilarge=where(Max_dx lt dx(0:nx-2),count)
-   if count gt 0 then begin
+   if count gt 0 then begin  
       print,prompt+'x mesh spacing is too large!'
       debug=1
       out=''
@@ -1755,6 +1769,7 @@ fH_done:
    fH_s=fH
    Simple_CX_s=Simple_CX
    JH_s=JH
+   Collrad_s=Use_Collrad_Ionization
    Recomb_s=Recomb
    H_H_EL_s=H_H_EL
    H_P_EL_s=H_P_EL

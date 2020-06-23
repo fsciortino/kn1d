@@ -2,11 +2,25 @@
 ; Create_Kinetic_H_Mesh.pro
 ;
 pro Create_Kinetic_H_Mesh,nv,mu,x,Ti,Te,n,PipeDia,xH,TiH,TeH,neH,PipeDiaH,vx,vr,Tnorm,E0=E0,ixE0=ixE0,irE0=irE0,fctr=fctr
+                                ; JH=JH,Use_Collrad_Ionization=Use_Collrad_Ionization
 
-   mH=1.6726231e-27		
-   q=1.602177e-19				
-   key_default,fctr,1.0
-   nx=n_elements(x)
+;add these lines to improve velocity space resolution (use with care):
+  nV=20
+  ;E0=[.1]
+
+   ; FS: extra flags for ionization coefficients:
+   ;key_default,JH,0
+   ;key_default,Use_Collrad_Ionization,1 ; true by default
+
+  ; FS: fix choice of ionization coefficients here:
+  JH=0
+  Use_Collrad_Ionization=1
+
+
+  mH=1.6726231e-27		
+  q=1.602177e-19				
+  key_default,fctr,1.0
+  nx=n_elements(x)
 ;
 ;  Estimate interaction rate with side walls
 ;
@@ -64,14 +78,23 @@ pro Create_Kinetic_H_Mesh,nv,mu,x,Ti,Te,n,PipeDia,xH,TiH,TeH,neH,PipeDiaH,vx,vr,
 ;
 ; Estimate total reaction rate, including charge exchange and elastic scattering, and interaction with side walls
 ;
-   RR=nfine*JHS_Coef(nfine,Tefine,/no_null)+nfine*sigmav_cx_H0(Tifine,replicate(minE0,n_elements(xfine))) +gamma_wall
+   if Use_Collrad_Ionization then begin
+      ioniz_rate=collrad_sigmav_ion_h0(nfine,Tefine) ; from COLLRAD code (DEGAS-2)
+   endif else begin
+      if JH then begin
+         ioniz_rate=JHS_Coef(nfine,Tefine,/no_null) ; Johnson-Hinnov, limited Te range
+      endif else begin
+         ioniz_rate=sigmav_ion_h0(Tefine) ; from Janev et al., up to 20keV
+      endelse
+   endelse
+   RR=nfine*ioniz_rate+nfine*sigmav_cx_H0(Tifine,replicate(minE0,n_elements(xfine))) +gamma_wall
 ;
 ; Compute local maximum grid spacing from dx_max = 2 min(vr) / RR
 ;
    big_dx=0.02*fctr
    dx_max=fctr*0.8*(2*vth*min(vr)/RR) < big_dx
 ;
-; Construct xH axis
+; Construct xH axis 
 ;
    xpt=xmaxH
    xH=[xpt]
@@ -81,7 +104,12 @@ pro Create_Kinetic_H_Mesh,nv,mu,x,Ti,Te,n,PipeDia,xH,TiH,TeH,neH,PipeDiaH,vx,vr,
       dxpt2=dxpt1
       xpt_test=xpt-dxpt1
       if xpt_test gt xminH then dxpt2=interpol(dx_max,xfine,xpt_test)
-      dxpt=min([dxpt1,dxpt2])
+      ;dxpt=min([dxpt1,dxpt2]) ; *0.5  ; FS: reduce spacing 
+      ; FS: force a preset maximum grid spacing
+      ;dxpt=max([min([dxpt1,dxpt2]),0.005]) ; FS
+      ; force a preset maximum grid spacing
+      dxh_max=0.0005     ; JWH: 0.0015 should be sufficient for D3D because scale lengths are 2.5x larger
+      dxpt=min([dxpt1,dxpt2,dxh_max])
       xpt=xpt-dxpt
    endwhile
    xH=[xminH,xH(0:n_elements(xH)-2)]

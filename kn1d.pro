@@ -170,6 +170,7 @@ pro KN1D,x,xlimiter,xsep,GaugeH2,mu,Ti,Te,n,vxi,LC,PipeDia,$
       fctr=0.3 
       if GaugeH2 gt 15.0 then fctr=fctr*15/GaugeH2
       Create_Kinetic_H2_Mesh,nv,mu,x,Ti,Te,n,PipeDia,xH2,TiM,TeM,nM,PipeDiaM,vxM,vrM,TnormM,E0=Eneut,fctr=fctr
+
 ;
 ;________________________________________________________________________________
 ; Determine optimized vr, vx, x grid for Kinetic_H (atoms, A)
@@ -178,6 +179,7 @@ pro KN1D,x,xlimiter,xsep,GaugeH2,mu,Ti,Te,n,vxi,LC,PipeDia,$
       fctr=0.3 
       if GaugeH2 gt 30.0 then fctr=fctr*30/GaugeH2
       Create_Kinetic_H_Mesh,nv,mu,x,Ti,Te,n,PipeDia,xH,TiA,TeA,nA,PipeDiaA,vxA,vrA,TnormA,fctr=fctr
+      
    endelse
    if mu eq 1 then begin
       _p='H!U+!N'
@@ -473,7 +475,7 @@ fH_fH2_iterate:
    Kinetic_H,vxA,vrA,xH,TnormA,mu,TiA,TeA,nA,vxiA,fHBC,GammaxHBC,PipeDiaA,fH2A,fSHA,nHPA,THPA,$
        fH,nH,GammaxH,VxH,pH,TH,qxH,qxH_total,NetHSource,Sion,QH,RxH,QH_total,AlbedoH,SideWallH,$
        truncate=truncate,Simple_CX=Simple_CX,Max_Gen=Max_Gen,$
-       No_Johnson_Hinnov=No_Johnson_Hinnov,No_Recomb=No_Recomb,$
+       No_Johnson_Hinnov=No_Johnson_Hinnov,Use_Collrad_Ionization=Use_Collrad_Ionization,No_Recomb=No_Recomb,$
        H_H_EL=H_H_EL,H_P_EL=H_P_EL,H_H2_EL=H_H2_EL,H_P_CX=H_P_CX,ni_correct=ni_correct,$
        error=Herror,compute_errors=Hcompute_errors,$
        plot=Hplot,debug=Hdebug,debrief=Hdebrief,pause=Hpause
@@ -603,35 +605,31 @@ fH_fH2_done:
    vrA_s=vrA
    TnormA_s=TnormA
    EH_hist=EH_hist(1:*)
-   SI_hist=SI_hist(1:*)
+   SI_hist=SI_hist(1:*) 
 
-   if (strlen(file) gt 0) and (iter gt 0) then begin
-      input=file+'.KN1D_input'
-      if debrief then printncr,prompt+' Saving input variables in ' & printcr,/rev,input
-      save,file=input,x,xlimiter,xsep,GaugeH2,mu,Ti,Te,n,vxi,LC,PipeDia,truncate,$
-                    xH2,TiM,TeM,nM,PipeDiaM,vxM,vrM,TnormM,$
-                    xH,TiA,TeA,nA,PipeDiaA,vxA,vrA,TnormA
-
-      mesh=file+'.KN1D_mesh'
-      if debrief then printncr,prompt+' Saving copy of input and mesh variables in ' & printcr,/rev,mesh
-      save,file=mesh,x_s,GaugeH2_s,mu_s,Ti_s,Te_s,n_s,vxi_s,LC_s,PipeDia_s,$
-                    xH2_s,vxM_s,vrM_s,TnormM_s,xH_s,vxA_s,vrA_s,TnormA_s
-
-      H2output=file+'.KN1D_H2'
-      if debrief then printncr,prompt+' Saving H2 output variables in ' & printcr,/rev,H2output
-      save,file=H2output,xH2,fH2,nH2,GammaxH2,VxH2,pH2,TH2,qxH2,qxH2_total,Sloss,QH2,RxH2,QH2_total,AlbedoH2,$
-              nHP,THP,fSH,SH,SP,SHP,NuE,NuDis,Nuloss,SpH2,$
-              piH2_xx,piH2_yy,piH2_zz,RxH2CX,RxH_H2,RxP_H2,RxW_H2,EH2CX,EH_H2,EP_H2,EW_H2,Epara_PerpH2_H2,$
-              
- Gam,GammaxH2_plus,GammaxH2_minus
-
-      Houtput=file+'.KN1D_H'
-      if debrief then printncr,prompt+' Saving H output variables in ' & printcr,/rev,Houtput
-      save,file=Houtput,xH,fH,nH,GammaxH,VxH,pH,TH,qxH,qxH_total,NetHSource,Sion,SideWallH,QH,RxH,QH_total,AlbedoH,$
-              GammaHLim,nDelta_nH2,$
-              piH_xx,piH_yy,piH_zz,RxHCX,RxH2_H,RxP_H,RxW_H,EHCX,EH2_H,EP_H,EW_H,Epara_PerpH_H,SourceH,SRecomb,EH_hist,SI_hist,$
-              GammaxH_plus,GammaxH_minus,Lyman,Balmer
-   endif
+   ;if (strlen(file) gt 0) and (iter gt 0) then begin
+   ; FS: always store all inputs and outputs for postprocessing
+   input=file+'.KN1D_input'   
+   if debrief then printncr,prompt+' Saving input variables in ' & printcr,/rev,input
+   save,file=input,x,xlimiter,xsep,GaugeH2,mu,Ti,Te,n,vxi,LC,PipeDia,truncate,xH2,TiM,TeM,nM,PipeDiaM,vxM,vrM,TnormM,$
+        xH,TiA,TeA,nA,PipeDiaA,vxA,vrA,TnormA
+   
+   mesh=file+'.KN1D_mesh'
+   if debrief then printncr,prompt+' Saving copy of input and mesh variables in ' & printcr,/rev,mesh
+   save,file=mesh,x_s,GaugeH2_s,mu_s,Ti_s,Te_s,n_s,vxi_s,LC_s,PipeDia_s,xH2_s,vxM_s,vrM_s,TnormM_s,xH_s,vxA_s,vrA_s,TnormA_s
+   
+   H2output=file+'.KN1D_H2'
+   if debrief then printncr,prompt+' Saving H2 output variables in ' & printcr,/rev,H2output
+   save,file=H2output,xH2,fH2,nH2,GammaxH2,VxH2,pH2,TH2,qxH2,qxH2_total,Sloss,QH2,RxH2,QH2_total,AlbedoH2,nHP,THP,fSH,$
+        SH,SP,SHP,NuE,NuDis,Nuloss,SpH2,piH2_xx,piH2_yy,piH2_zz,RxH2CX,RxH_H2,RxP_H2,RxW_H2,EH2CX,EH_H2,EP_H2,EW_H2,$
+        Epara_PerpH2_H2,Gam,GammaxH2_plus,GammaxH2_minus
+   
+   Houtput=file+'.KN1D_H'
+   if debrief then printncr,prompt+' Saving H output variables in ' & printcr,/rev,Houtput
+   save,file=Houtput,xH,fH,nH,GammaxH,VxH,pH,TH,qxH,qxH_total,NetHSource,Sion,SideWallH,QH,RxH,QH_total,AlbedoH,GammaHLim,$
+        nDelta_nH2,piH_xx,piH_yy,piH_zz,RxHCX,RxH2_H,RxP_H,RxW_H,EHCX,EH2_H,EP_H,EW_H,Epara_PerpH_H,SourceH,SRecomb,$
+        EH_hist,SI_hist,GammaxH_plus,GammaxH_minus,Lyman,Balmer
+   ;endif
 ;
 plots:
 ;

@@ -8,7 +8,7 @@ Function JHS_Coef,Density,Te,create=create,no_null=no_null
 ;________________________________________________________________________________
 ; Input:
 ;  	Density	- fltarr, electron density (=hydrogen ion density) (m^-3)
-;  	Te	- fltarr, electron temperature (eV
+;  	Te	- fltarr, electron temperature (eV)
 ;
 ; Keywords:
 ;	create	- if set, then create bi-cubic spline coefficients for
@@ -39,12 +39,22 @@ Function JHS_Coef,Density,Te,create=create,no_null=no_null
       LDensity=LDensity > min(Dknot)
       LDensity=LDensity < max(Dknot)
       LTe=LTe > min(Tknot)
-      LTe=LTe < max(Tknot)
+      LTe=LTe < max(Tknot)   ;Alog(exp(max(Tknot))-1.0) ; FS: prevent issues at bounds ; max(Tknot)
       count=n_elements(LDensity)
       ok=lindgen(count)
    endif else begin
       ok=where(LDensity le max(Dknot) and LDensity ge min(Dknot) and LTe le max(Tknot) and LTe ge min(Tknot),count)
    endelse
    if count gt 0 then Result(ok)=exp(BS2DR(0,0,LDensity(ok),LTe(ok),order,order,Dknot,Tknot,LogS_BSCoef))
+
+; FS: there seem to be issues when we go to high temperatures
+; solve temporarily by setting rates as constant at high temperatures
+;   res_sub = Result(ok)
+;   idxs = where(res_sub EQ 1.0)
+;   idx_sub = min(idxs)-1
+;   res_sub(idxs) = res_sub(idx_sub)
+;   result = res_sub
+;;; ... this gives excessive x spacing...
+
    return,result
    end
