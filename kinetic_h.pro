@@ -321,7 +321,7 @@ pro Kinetic_H,vx,vr,x,Tnorm,mu,Ti,Te,n,vxi,fHBC,GammaxHBC,PipeDia,fH2,fSH,nHP,TH
    key_default,Max_Gen,50
    key_default,No_Johnson_Hinnov,0
    ; FS: extra flag to activate ionization rates from COLLRAD
-   key_default,Use_Collrad_Ionization,1 ; true by default
+   key_default,Use_Collrad_Ionization,0 ;  FS: set to 0 by default, but it should work
    JH=1 & if No_Johnson_Hinnov then JH=0
    key_default,No_Recomb,0
    Recomb=1 & if No_Recomb then Recomb=0
@@ -1043,7 +1043,7 @@ fH_Iterate:
    Max_dxR=Max_dx(1:nx-1)
    Max_dx=Max_dxL < Max_dxR
    ilarge=where(Max_dx lt dx(0:nx-2),count)
-   if count gt 0 then begin  
+   if count gt 0 then begin 
       print,prompt+'x mesh spacing is too large!'
       debug=1
       out=''
