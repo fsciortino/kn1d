@@ -29,4 +29,5 @@ kn1d :
 
 clean :
 	@echo "Eiminating KN1D shared-object library"
-	rm $(OUT_DIR)/*.so
+	rm $(KN1DF)/../*.so    ##rm $(OUT_DIR)/*.so
+
