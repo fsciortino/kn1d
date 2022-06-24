@@ -39,7 +39,7 @@
    PWD= PWD+'/'
         
    ;status=CALL_EXTERNAL('fast_b2val.so','fast_b2val__',NV,IXD,IYD,Xd,Yd,Kx,Ky,Xk,Yk,NXCOEF,NYCOEF,BSC,RESULT,WORK)
-   status=CALL_EXTERNAL('fast_b2val.so','fast_b2val_',NV,IXD,IYD,Xd,Yd,Kx,Ky,Xk,Yk,NXCOEF,NYCOEF,BSC,RESULT,WORK)
-   ;status=CALL_EXTERNAL(PWD+'fast_b2val.so','fast_b2val__',NV,IXD,IYD,Xd,Yd,Kx,Ky,Xk,Yk,NXCOEF,NYCOEF,BSC,RESULT,WORK)
+   ;status=CALL_EXTERNAL('fast_b2val.so','fast_b2val_',NV,IXD,IYD,Xd,Yd,Kx,Ky,Xk,Yk,NXCOEF,NYCOEF,BSC,RESULT,WORK)
+   status=CALL_EXTERNAL(PWD+'fast_b2val.so','fast_b2val_',NV,IXD,IYD,Xd,Yd,Kx,Ky,Xk,Yk,NXCOEF,NYCOEF,BSC,RESULT,WORK)
    return,Result
    end
